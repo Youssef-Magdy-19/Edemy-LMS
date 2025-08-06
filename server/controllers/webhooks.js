@@ -13,9 +13,11 @@ const clerkWebhooks = async (req , res)=>{
         })
 
         const {data , type} = req.body
+        console.log('webhook receive:' , type)
 
         switch (type) {
             case 'user.created': {
+                console.log('create user:' , type)
                 const userData = {
                     _id : data.id , 
                     email : data.email_addresses[0].email_address,
@@ -28,8 +30,9 @@ const clerkWebhooks = async (req , res)=>{
             }
 
             case 'user.updated' : {
+                console.log('update user:' , type)
                 const userData = { 
-                    email : data.email_address[0].email_address,
+                    email : data.email_addresses[0].email_address,
                     name : data.first_name + " " + data.last_name,
                     imageUrl : data.imageUrl,
                 }
@@ -39,6 +42,7 @@ const clerkWebhooks = async (req , res)=>{
             }
 
             case 'user.deleted' : {
+                console.log('deleted user:' , type)
                 await User.findByIdAndDelete(data.id)
                 res.json({})
                 break;
