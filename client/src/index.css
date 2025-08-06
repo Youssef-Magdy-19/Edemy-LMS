@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+@import "tailwindcss";
+
+@layer base {
+  * {
+    font-family: Outfit;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.rich-text {
+  font-size: 15px;
+  color: #7a7b7d;
+}
+
+.rich-text p {
+  margin-bottom: 10px;
+}
+
+.rich-text h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #252525;
+  margin: 22px 0;
+}
+
+.rich-text h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #252525;
+  margin-bottom: 15px;
+}
+
+.rich-text ul {
+  margin-left: 20px;
+  list-style-type: disc !important;
+}
+
+.rich-text li {
+  margin-bottom: 2.5px;
+}
+
+
+.container {
+  width: 85% !important;
+  margin: auto;
+}
+
+button {
+  border: none;
+}
+
+/* -------------------------------- Hero section -------------------------- */
+
+.hero h1 {
+  margin-bottom: 20px;
+}
+
+.search {
+  width: 65% !important;
+}
+
+
+
+@media(max-width:1024px) {
+
+  /* --------------- Companies ------------------------- */
+  .Companies-images {
+    justify-content: center !important;
+  }
+}
+
+@media(max-width:767px) {
+  .course-details {
+    width: 92% !important;
+    margin: auto;
+    color: rgba(180, 180, 180, 0.459);
+  }
+}
+
+@media(max-width:567px) {
+  .container {
+    width: 90% !important;
+  }
+
+  .search {
+    width: 100% !important;
+  }
+
+  .searchbar {
+    margin: auto;
+  }
+
+  .search input {
+    width: 80% !important;
+  }
+
+  .search button {
+    padding: 5px 18px !important;
+  }
+
+  .searchbar {
+    width: 85% !important;
+  }
+
+  .Courses,
+  .Testimonials,
+  .action {
+    width: 90% !important;
+  }
+
+  /* ------------------ footer ------------------ */
+  .line {
+    width: 100% !important;
+  }
+
+  /* ------------------ course list ------------- */
+  .list-courses,
+  .slice-courses {
+    margin: 30px 20px !important;
+  }
+
+  /* ----------------------- My Enrollments ----------------------- */
+  .col-course {
+    width: 75% !important;
+  }
+
+  .progress {
+    width: 93% !important;
+  }
+}
