@@ -23,9 +23,18 @@ const clerkWebhooks = async (req, res) => {
         const userData = {
             clerkUserId: data.id,
             name: (data.first_name || "") + " " + (data.last_name || ""),
-            email: data.email_addresses?.email_address || '',
-            imageUrl: data.image_url || '',
-        };
+            imageUrl: data.image_url || "",
+        }
+
+        // أضيف الإيميل بس لو موجود ومش فاضي
+        if (Array.isArray(data.email_addresses) && data.email_addresses.length > 0) {
+            const firstEmail = data.email_addresses.email_address
+            if (firstEmail && firstEmail.trim() !== "") {
+                userData.email = firstEmail
+            }
+        }
+
+        console.log(userData)
 
         switch (type) {
             case 'user.created':
