@@ -2,39 +2,59 @@ import { Webhook } from "svix";
 import User from "../models/User.js";
 
 // API Controller Function to Manage Clerk USer with database
-export const clerkWebhooks = async (req, res) => {
+
+const clerkWebhooks = async (req, res) => {
+    console.log('Received webhook request');
+    console.log('Body:', req.body);
+    console.log('Headers:', req.headers);
     try {
-        const headers = req.headers;
-        const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
-        const evt = wh.verify(payload, headers);
+        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+        await whook.verify(JSON.stringify(req.body), {
+            "svix-id": req.headers['svix-id'],
+            "svix-timestamp": req.headers['svix-timestamp'],
+            "svix-signature": req.headers['svix-signature'],
+        });
+        console.log('Webhook verified');
 
-        if (evt.type === 'user.created' || evt.type === 'user.updated') {
-            const { id, email_addresses, name, profile_image_url } = evt.data; // ضفت profile_image_url
+        const { data, type } = req.body;
+        console.log('Event type:', type);
+        console.log('Event data:', data);
 
-            let user = await User.findOne({ clerkUserId: id });
+        switch (type) {
+            case 'user.created':
+                console.log('Creating user...');
+                const userData = {
+                    _id: data.id,
+                    name: data.first_name,
+                    email: data.email_addresses?.email_address || '',
+                    imageUrl: data.image_url,
+                };
+                await User.create(userData);
+                return res.status(200).json({});
 
-            if (user) {
-                user.email = email_addresses?.email_address || user.email;
-                user.name = name || user.name;
-                user.imageUrl = profile_image_url || user.imageUrl; // خزنه هنا
-                await user.save();
-                console.log(`User ${id} updated`);
-            } else {
-                user = new User({
-                    clerkUserId: id,
-                    email: email_addresses?.email_address,
-                    name,
-                    imageUrl: profile_image_url, // خزنه في إنشاء المستخدم الجديد
-                });
-                await user.save();
-                console.log(`User ${id} created`);
-            }
+            case 'user.updated':
+                console.log('Updating user...');
+                const updateData = {
+                    email: data.email_addresses?.email_address || '',
+                    name: data.first_name + " " + data.last_name,
+                    imageUrl: data.image_url,
+                };
+                await User.findByIdAndUpdate(data.id, updateData);
+                return res.status(200).json({});
 
+            case 'user.deleted':
+                console.log('Deleting user...');
+                await User.findByIdAndDelete(data.id);
+                return res.status(200).json({});
+
+            default:
+                console.log('Unhandled event type:', type);
+                return res.status(200).json({});
         }
-
-        res.status(200).json({ success: true, message: 'Webhook processed' });
     } catch (error) {
-        console.log('Error processing webhook:', error);
-        res.status(400).json({ success: false, message: error.message });
+        console.error('Webhook error:', error);
+        return res.status(400).json({ error: error.message });
     }
 };
+
+export default clerkWebhooks
