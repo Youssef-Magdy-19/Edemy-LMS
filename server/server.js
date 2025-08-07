@@ -10,7 +10,6 @@ const app = express()
 await connectDB()
 
 // Middlewars
-app.use(express.json())
 app.use(cors())
 
 // Routes
