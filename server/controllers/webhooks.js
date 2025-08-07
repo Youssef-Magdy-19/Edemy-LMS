@@ -4,27 +4,31 @@ import User from "../models/User.js";
 // API Controller Function to Manage Clerk USer with database
 
 const clerkWebhooks = async (req, res) => {
-    console.log('webhook receive:')
+    console.log('Received webhook request');
+    console.log('Body' , req.body)
+    console.log('headers' , req.headers)
     try {
-        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
+        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
         await whook.verify(JSON.stringify(req.body), {
             "svix-id": req.headers['svix-id'],
             "svix-timestamp": req.headers['svix-timestamp'],
             "svix-signature": req.headers['svix-signature'],
-        })
+        });
+        console.log('Webhook verified');
 
-        const { data, type } = req.body
-        console.log('webhook receive:', type)
+        const { data, type } = req.body;
+        console.log('Event type:', type);
+        console.log('Event data:', data);
 
         switch (type) {
             case 'user.created':
-                console.log('create user:', type);
+                console.log('Creating user...')
                 try {
                     const userData = {
                         _id: data.id,
                         name: data.first_name,
                         email: data.email_addresses[0].email_address,
-                        imageUrl: data.profile_image_url,
+                        imageUrl: data.image_url,
                     };
                     await User.create(userData);
                     return res.status(200).json({});
@@ -38,7 +42,7 @@ const clerkWebhooks = async (req, res) => {
                 const userData = {
                     email: data.email_addresses[0].email_address,
                     name: data.first_name + " " + data.last_name,
-                    imageUrl: data.profile_image_url,
+                    imageUrl: data.image_url,
                 }
                 await User.findByIdAndUpdate(data.id, userData)
                 res.json({})
@@ -53,10 +57,13 @@ const clerkWebhooks = async (req, res) => {
             }
 
             default:
-                break;
+                console.log('Unhandled event type');
         }
+        res.status(200).json({});
     } catch (error) {
-        res.json({ success: false, message: error.message })
+        console.error('Webhook error:', error);
+        res.status(400).json({ error: error.message });
     }
-}
+};
+
 export default clerkWebhooks
