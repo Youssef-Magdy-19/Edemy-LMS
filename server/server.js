@@ -14,12 +14,7 @@ app.use(cors())
 
 // Routes
 app.get('/' , (req , res) => res.send('API Working'))
-app.post('/clerk-test', (req, res) => {
-  console.log('Received webhook request');
-  console.log('Body:', req.body);
-  console.log('Headers:', req.headers);
-  res.status(200).json({});
-});
+app.post('/clerk' , clerkWebhooks)
 
 // Port
 const PORT = process.env.PORT || 5000
