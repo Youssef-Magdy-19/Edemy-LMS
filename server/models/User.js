@@ -1,7 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 
 const userShecma = new mongoose.Schema({
-    clerkUserId : {type : String , require : true , trim : true} ,
+    _Id : {type : String , require : true , trim : true} ,
     name : {type : String , require : true , trim : true} , 
     email : {type : String , require : true , trim : true , unique : true} ,
     imageUrl : {type : String , require : true , trim : true}, 
