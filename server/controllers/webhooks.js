@@ -24,7 +24,7 @@ const clerkWebhooks = async (req, res) => {
             case 'user.created':
                 console.log('Creating user...');
                 const userData = {
-                    _id: data.id,
+                    clerkUserId: data.id,
                     name: data.first_name,
                     email: data.email_addresses?.email_address || '',
                     imageUrl: data.image_url,
