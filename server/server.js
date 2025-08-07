@@ -12,11 +12,10 @@ await connectDB()
 // Middlewars
 app.use(express.json())
 app.use(cors())
-app.use(bodyParser.raw({ type: 'application/json' }))
 
 // Routes
 app.get('/' , (req , res) => res.send('API Working'))
-app.post('/clerk' , clerkWebhooks)
+app.post('/clerk', bodyParser.raw({ type: 'application/json' }), clerkWebhooks)
 
 // Port
 const PORT = process.env.PORT || 5000
