@@ -26,12 +26,16 @@ const clerkWebhooks = async (req, res) => {
             imageUrl: data.image_url || "",
         }
 
-        // أضيف الإيميل بس لو موجود ومش فاضي
+        // اجلب الايميل من الـ array إذا موجود ومو فاضي
+        let emailToUse = null
         if (Array.isArray(data.email_addresses) && data.email_addresses.length > 0) {
             const firstEmail = data.email_addresses.email_address
             if (firstEmail && firstEmail.trim() !== "") {
-                userData.email = firstEmail
+                emailToUse = firstEmail
             }
+        }
+        if (emailToUse) {
+            userData.email = emailToUse
         }
 
         console.log(userData)
