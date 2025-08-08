@@ -29,7 +29,7 @@ const clerkWebhooks = async (req, res) => {
         // اجلب الايميل من الـ array إذا موجود ومو فاضي
         let emailToUse = null
         if (Array.isArray(data.email_addresses) && data.email_addresses.length > 0) {
-            const firstEmail = data.email_addresses.email_address
+            const firstEmail = data.email_addresses[0]?.email_address
             if (firstEmail && firstEmail.trim() !== "") {
                 emailToUse = firstEmail
             }
