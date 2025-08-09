@@ -1,9 +1,15 @@
 import express from 'express'
-import { updateRoleToEducator } from '../controllers/educatorController.js'
+import { addCourse, educatorDashhboard, getEducatorCourses, getEnrolledStudentData, updateRoleToEducator } from '../controllers/educatorController.js'
+import upload from '../configs/multer.js'
+import { protectEducator } from '../middlewars/authMiddleware.js'
 
 const educatorRouter = express.Router()
 
 // Add Educator Role
 educatorRouter.get('/update-role', updateRoleToEducator)
+educatorRouter.post('/add-course', upload.single('image'), protectEducator, addCourse)
+educatorRouter.get('/courses', protectEducator, getEducatorCourses)
+educatorRouter.get('/dashboard', protectEducator, educatorDashhboard)
+educatorRouter.get('/enrolled-students', protectEducator, getEnrolledStudentData)
 
 export default educatorRouter

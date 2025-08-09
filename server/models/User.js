@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const userShecma = new mongoose.Schema({
     clerkUserId : {type : String , require : true , trim : true} ,
