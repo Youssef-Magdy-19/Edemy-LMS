@@ -140,7 +140,7 @@ const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY)
 //     response.json({received: true})
 // }
 
-export const stripeWebhook = async (req, res) => {
+export const stripeWebhooks = async (req, res) => {
     const sig = req.headers['stripe-signature'];
 
     let event;
