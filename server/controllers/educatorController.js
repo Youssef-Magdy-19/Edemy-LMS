@@ -82,7 +82,7 @@ export const educatorDashhboard = async (req, res)=>{
         const enrolledStudentsData = []
         for(const course of courses){
             const students = await User.find({
-                _id: { $in: course.enrolledStudentes}
+                _id: { $in: course.enrolledStudents}
             }, 'name imageUrl')
 
             students.forEach(student => {
@@ -108,7 +108,7 @@ export const getEnrolledStudentData = async (req, res)=>{
         const courses = await Course.find({educator})
         const courseIds = courses.map(course => course._id)
 
-        const Purchases = await Purchase.find({
+        const purchases = await Purchase.find({
             courseId: { $in: courseIds},
             status: 'completed'
         }).populate('userId', 'name imageUrl').populate('courseId', 'courseTitle')
@@ -116,7 +116,7 @@ export const getEnrolledStudentData = async (req, res)=>{
         const enrolledStudents = purchases.map( purchase=> ({
             student: purchase.userId,
             courseTitle: purchase.courseId.courseTitle,
-            purchaseDate: purchase.createAt
+            purchaseDate: purchase.createdAt
         }))
 
         res.status(200).json({ success: true, enrolledStudents})

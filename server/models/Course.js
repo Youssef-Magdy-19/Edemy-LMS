@@ -20,7 +20,7 @@ const courseSchema = new mongoose.Schema({
     courseTitle : {type: String, require : true},
     courseDescription : {type: String, require : true},
     courseThumbnail : {type: String, require : true},
-    coursePrice : {type: String, require : true},
+    coursePrice : {type: Number, require : true},
     isPublished : {type: Boolean, require : true},
     discount : {type: Number, require : true , min: 0, max: 100},
     courseContent: [chapterSchema],

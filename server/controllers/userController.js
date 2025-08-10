@@ -89,17 +89,17 @@ export const purchaseCourse = async (req, res) => {
     try {
         const { courseId } = req.body
         const { origin } = req.headers
-        const userClerkId = req.auth.userId
-        const userData = await User.findOne({ userClerkId })
+        const clerkUserId = req.auth.userId
+        const userData = await User.findOne({ clerkUserId })
         const courseData = await Course.findById(courseId)
 
         if (!userData || !courseData) {
-            return res.status(400).json({ success: false, message: 'Data Not Found' })
+            return res.status(400).json({ success: false, message: 'Data Not Found' , console: console.log(userData, clerkUserId) })
         }
 
         const purchaseData = {
             courseId: courseData._id,
-            userId,
+            userId: userData._id,
             amount: (courseData.coursePrice - courseData.discount * courseData.coursePrice / 100).toFixed(2)
         }
 
@@ -122,8 +122,8 @@ export const purchaseCourse = async (req, res) => {
         }]
 
         const session = await stripeInstance.checkout.sessions.create({
-            success_url: `${ origin } / loading / my - enrollments`,
-            cancel_url: `${ origin } /`,
+            success_url: `${ origin }/loading/my-enrollments`,
+            cancel_url: `${ origin }/`,
             line_items: line_items,
             mode: 'payment',
             metadata: {
