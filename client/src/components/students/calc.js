@@ -2,7 +2,15 @@ import humanizeDuration from "humanize-duration"
 
 export const calcCourse = (course) => {
     let timeCourse = 0
-    course.courseContent.map((chapter) => { chapter.chapterContent.map((lec) => { timeCourse += lec.lectureDuration }) })
+    if (Array.isArray(course.courseContent)) {
+        course.courseContent.forEach(chapter => {
+            if (Array.isArray(chapter.chapterContent)) {
+                chapter.chapterContent.forEach(lec => {
+                    timeCourse += lec.lectureDuration || 0;
+                });
+            }
+        });
+    }
     return humanizeDuration(timeCourse * 60 * 1000, { units: ['h', 'm'] })
 }
 export const calcChapter = (chapter) => {

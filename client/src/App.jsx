@@ -17,12 +17,14 @@ import Player from './pages/students/Player'
 import EduFooter from './components/educator/EduFooter'
 import Sidebar from './components/educator/Sidebar'
 import 'quill/dist/quill.snow.css'
+import { ToastContainer } from 'react-toastify'
 
 const App = () => {
   // مهمه جدا عشان اقدر احط كل هيدر في مكانه الصح 
   const CheckEducator = location.pathname.includes('/educator')
   return (
     <div style={{marginTop: CheckEducator ? '60px' : '60px'}}>
+      <ToastContainer />
       {CheckEducator ? <EduNavbar /> : <Navbar />}
       {/* {CheckEducator ? <Sidebar /> : null} */}
       <Routes>

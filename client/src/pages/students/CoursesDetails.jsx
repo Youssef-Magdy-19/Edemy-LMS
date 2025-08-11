@@ -1,27 +1,72 @@
 import Loading from '../../components/students/Loading'
-import { assets, dummyCourses } from '../../assets/assets'
-import React, { useEffect, useState } from 'react'
+import { assets } from '../../assets/assets'
+import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import humanizeDuration from 'humanize-duration'
 import YouTube from 'react-youtube'
 import { calcChapter, calcCourse, calcNoOfLecturesCourse } from '../../components/students/calc'
 import useWindowScrollToTop from '../../hooks/useWindowScrollToTop'
+import { AppContext } from '../../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const CoursesDetails = () => {
   const { id } = useParams()
-  const [courseFilter , setCourseFilter] = useState(null)
+  const [courseFilter, setCourseFilter] = useState(null)
   const [openSection, setOpenSection] = useState({})
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false)
-
+  const { backendUrl, userData, getToken, fetchUserData } = useContext(AppContext)
+  fetchUserData()
+ 
   // ده مخزن بتاع فيديو المراجعه بعمله مخزن فاضي عشان لما اعمل اختبار لو فيه قيمه
   const [perview, setPerview] = useState(null)
 
-  const fetchCourseData = async ()=>{
-    const findCourse = dummyCourses.find((course) => course._id === id)
-    setCourseFilter(findCourse)
+  const fetchCourseData = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + '/api/course/' + id)
+
+      if (data.success) {
+        setCourseFilter(data.courseData)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
-  useEffect(()=> {fetchCourseData()} , [dummyCourses])
+  const enrollCourse = async () => {
+    try {
+      if (!userData) {
+        return toast.warn('Login to Enroll')
+      }
+      if (isAlreadyEnrolled) {
+        return toast.warn('Already Enrolled')
+      }
+      const token = await getToken()
+      const { data } = await axios.post(backendUrl + '/api/user/purchase',
+        { courseId: courseFilter._id }, { headers: { Authorization: `Bearer ${token}` } }
+      )
+
+      if (data.success) {
+        const { session_url } = data
+        window.location.replace(session_url)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+  useEffect(() => { fetchCourseData() }, [])
+  
+  console.log(userData)
+  console.log(userData.enrolledCourses.includes(courseFilter._id))
+  useEffect(() => {
+    if (userData && courseFilter) {
+      setIsAlreadyEnrolled(userData.enrolledCourses.includes(courseFilter._id))
+    }
+  }, [userData, courseFilter])
 
   const handleSection = (index) => {
     setOpenSection((prev) => (
@@ -44,15 +89,15 @@ const CoursesDetails = () => {
             style={{ paddingTop: '10px' }}
           ></p>
           <div className="flex items-center gap-2">
-            <p>{courseFilter.rating}</p>
+            <p>{courseFilter.courseRatings[0].rating}</p>
             <div className='flex'>
-              {[...Array(courseFilter.rating)].map((_, i) => <img key={i} src={assets.star} className='h-3.5 w-3.5' />)}
-              {[...Array(5 - courseFilter.rating)].map((_, i) => <img key={i} src={assets.star_blank} className='h-3.5 w-3.5' />)}
+              {[...Array(courseFilter.courseRatings[0].rating)].map((_, i) => <img key={i} src={assets.star} className='h-3.5 w-3.5' />)}
+              {[...Array(5 - courseFilter.courseRatings[0].rating)].map((_, i) => <img key={i} src={assets.star_blank} className='h-3.5 w-3.5' />)}
             </div>
             <p className='text-blue-500'>({courseFilter.courseRatings.length} {courseFilter.courseRatings.length > 1 ? 'ratings' : 'rating'})</p>
             <p>{courseFilter.enrolledStudents.length} {courseFilter.enrolledStudents.length > 1 ? 'students' : 'student'}</p>
           </div>
-          <p>Course by <span style={{ marginLeft: '5px' }} className='text-blue-500 underline'> GreatStack</span></p>
+          <p>Course by <span style={{ marginLeft: '5px' }} className='text-blue-500 underline'>{courseFilter.educator.name}</span></p>
 
           <div className='text-gray-800' style={{ margin: '25px 0' }}>
             <h2 className='font-semibold text-xl' style={{ marginBottom: '15px' }}>Course Structure</h2>
@@ -78,9 +123,9 @@ const CoursesDetails = () => {
                             <div className='flex gap-3 items-center'>
                               {lec.isPreviewFree && <p className='text-blue-500 cursor-pointer' onClick={() => {
                                 setPerview({
-                                  videoId : lec.lectureUrl.split('/').pop() 
+                                  videoId: lec.lectureUrl.split('/').pop()
                                 }),
-                                scrollTo(0,0)
+                                  scrollTo(0, 0)
                               }}>Perview</p>}
                               <p>{humanizeDuration(lec.lectureDuration * 60 * 1000, { units: ['h', 'm'] })}</p>
                             </div>
@@ -122,7 +167,7 @@ const CoursesDetails = () => {
             <div className="flex gap-4 items-center text-sm md:text-default text-gray-500" >
               <div className="flex gap-1 items-center">
                 <img src={assets.star} alt="star" />
-                <p>{courseFilter.rating}</p>
+                <p>{courseFilter.courseRatings[0].rating}</p>
               </div>
               <div className='bg-gray-500/40 h-4 w-px' style={{ width: '1px', margin: '0 5px' }}></div>
               <div className="flex gap-1 items-center">
@@ -140,7 +185,7 @@ const CoursesDetails = () => {
               </div>
             </div>
 
-            <button className='bg-blue-600 text-white rounded font-medium cursor-pointer'
+            <button onClick={enrollCourse} className='bg-blue-600 text-white rounded font-medium cursor-pointer'
               style={{ width: '100%', padding: '6.5px 0', margin: '12.5px 0' }}
             >
               {isAlreadyEnrolled ? 'Already Enrolled' : 'Enroll Now'}

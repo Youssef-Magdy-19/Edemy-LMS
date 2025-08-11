@@ -1,11 +1,14 @@
 import { calcCourse, calcNoOfLecturesCourse } from '../../components/students/calc'
-import { assets, dummyCourses } from '../../assets/assets'
-import React, { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Line } from 'rc-progress'
 import useWindowScrollToTop from '../../hooks/useWindowScrollToTop'
+import { AppContext } from '../../context/AppContext'
 
 const MyEnrollments = () => {
+  const { enrolledCourses, fetchUserEnrolledCourses } = useContext(AppContext)
+  // fetchUserEnrolledCourses()
+  console.log(enrolledCourses)
   const navigate = useNavigate()
   const [ProgressArray, setProgressArray] = useState([
     { lectureCompleted: 2, totalLectures: 4 },
@@ -31,7 +34,8 @@ const MyEnrollments = () => {
           </tr>
         </thead>
         <tbody className='text-gray-700'>
-          {dummyCourses.map((course, index) => {
+          { enrolledCourses && enrolledCourses.length > 0 ?
+          enrolledCourses.map((course, index) => {
             return (
               <tr key={index} className='border-b border-gray-500/20'>
                 <td className='flex gap-1 sm:gap-2 items-center space-x-3'>
@@ -57,7 +61,7 @@ const MyEnrollments = () => {
                 </td>
               </tr>
             )
-          })}
+          }) : null}
         </tbody>
       </table>
     </div>

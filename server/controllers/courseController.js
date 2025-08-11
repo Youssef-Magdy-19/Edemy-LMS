@@ -35,3 +35,22 @@ export const getCourseId = async (req, res) =>{
         res.status(500).json({ success: false, message: error.message })
     }
 }
+
+// Get Courses By Ids (Enrollments)
+export const getCoursesByIds = async (req, res) => {
+    try{
+        const { ids } = req.body
+
+        if (!Array.isArray(ids)){ 
+            return res.status(400).json({ success: false, error: 'IDs must be an array' });
+        }
+
+        const coursesDB = await Course.find({})
+        const courses = coursesDB.filter(course => ids.includes(course._id.toString()))
+        
+        res.status(200).json({success: true, courses})
+
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message})
+    }
+}
