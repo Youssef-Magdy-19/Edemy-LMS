@@ -95,7 +95,7 @@ export const updateUserCourseProgress = async (req, res) => {
 
         let progressData = await CourseProgress.findOne({
             userId: user._id,
-            courseId: courseObjectId
+            courseId: courseId
         });
 
 

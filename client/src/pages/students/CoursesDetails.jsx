@@ -90,7 +90,6 @@ const CoursesDetails = () => {
 
   // show loading while course not loaded OR clerk not loaded (optional)
   if (!courseFilter) return <Loading />
-  if (!isLoaded || userData === null) return <Loading />
   // if(!userData) return <div className='h-full w-full flex justify-center items-center'>User not found</div>
 
   return courseFilter ? (
