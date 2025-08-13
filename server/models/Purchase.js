@@ -4,14 +4,14 @@ const PurchaseSchema = new mongoose.Schema({
     courseId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course',
-        require: true
+        required: true
     },
     userId: {
         type: String,
         ref: 'User',
-        require: true
+        required: true
     },
-    amount: { type: Number, require: true},
+    amount: { type: Number, required: true},
     status: { type: String, enum: [ 'pending', 'completed', 'failed'], default: 'pending'},
 }, {timestamps: true})
 

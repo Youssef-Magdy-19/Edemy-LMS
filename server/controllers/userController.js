@@ -88,9 +88,19 @@ export const purchaseCourse = async (req, res) => {
 // Update User Course Progress
 export const updateUserCourseProgress = async (req, res) => {
     try {
-        const userId = req.auth.userId
+        const clerkUserId = req.auth.userId
         const { courseId, lectureId } = req.body
-        const progressData = await CourseProgress.findOne({ userId, courseId })
+        const user = await User.findOne({ clerkUserId: clerkUserId })
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        // تأكد إن courseId ObjectId
+        const courseObjectId = new mongoose.Types.ObjectId(courseId);
+
+        let progressData = await CourseProgress.findOne({
+            userId: user._id,
+            courseId: courseObjectId
+        });
+
 
         if (progressData) {
             if (progressData.lectureCompleted.includes(lectureId)) {
@@ -99,11 +109,12 @@ export const updateUserCourseProgress = async (req, res) => {
             progressData.lectureCompleted.push(lectureId)
             await progressData.save()
         } else {
-            await CourseProgress.create({
-                userId,
-                courseId,
-                lectureCompleted: [lectureId]
+            progressData = await CourseProgress.create({
+                userId: user._id,
+                courseId: courseObjectId,
+                lectureCompleted: lectureId ? [lectureId] : []
             })
+            return res.status(200).json({ success: true, message: "Progress Created", progressData });
         }
 
         res.status(200).json({ success: true, message: 'Progress Updated' })
@@ -116,10 +127,18 @@ export const updateUserCourseProgress = async (req, res) => {
 // get User Course Progress
 export const getCourseProgress = async (req, res) => {
     try {
-        const userId = req.auth.userId
+        const clerkUserId = req.auth.userId
         const { courseId } = req.body
-        const progressData = await CourseProgress.findOne({ userId, courseId })
+        const user = await User.findOne({ clerkUserId: clerkUserId })
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
+        // تأكد إن courseId ObjectId
+        const courseObjectId = new mongoose.Types.ObjectId(courseId);
+
+        let progressData = await CourseProgress.findOne({
+            userId: user._id,
+            courseId: courseObjectId
+        });
         if (!progressData) {
             return res.status(400).json({ success: false, message: 'Course Progress Not Found' })
         }
@@ -141,24 +160,24 @@ export const addUserRatingCourse = async (req, res) => {
     }
     try {
         const courseData = await Course.findById(courseId)
-        if(!courseData){
-            return res.status(404).json({success: false, message: 'Course Not Found'})
+        if (!courseData) {
+            return res.status(404).json({ success: false, message: 'Course Not Found' })
         }
 
-        const user = await User.findOne({clerkUserId: userId})
-        if(!user || !user.enrolledCourses.includes(courseId)){
-            return res.status(400).json({success: false, message: 'User has not puchased this course'})
+        const user = await User.findOne({ clerkUserId: userId })
+        if (!user || !user.enrolledCourses.includes(courseId)) {
+            return res.status(400).json({ success: false, message: 'User has not puchased this course' })
         }
 
         const existingRatingIndex = courseData.courseRatings.findIndex(r => r.userId === userId)
-        if(existingRatingIndex > -1){
+        if (existingRatingIndex > -1) {
             courseData.courseRatings[existingRatingIndex].rating = rating
         } else {
-            courseData.courseRatings.push({userId, rating})
+            courseData.courseRatings.push({ userId, rating })
         }
         await courseData.save()
 
-        res.status(200).json({success: true, message: 'Rating added'})
+        res.status(200).json({ success: true, message: 'Rating added' })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
     }
