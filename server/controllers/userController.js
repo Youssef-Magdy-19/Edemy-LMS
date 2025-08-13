@@ -2,8 +2,7 @@ import User from "../models/User.js"
 import Stripe from "stripe";
 import { Purchase } from "../models/Purchase.js";
 import Course from "../models/Course.js";
-import { CourseProgress } from "../models/CourseProgress.js";
-import mongoose from "mongoose";
+import { CourseProgress } from "../models/CourseProgress.js"
 
 // Get User Data
 export const getUserData = async (req, res) => {
@@ -94,9 +93,6 @@ export const updateUserCourseProgress = async (req, res) => {
         const user = await User.findOne({ clerkUserId: clerkUserId })
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-        // تأكد إن courseId ObjectId
-        const courseObjectId = new mongoose.Types.ObjectId(courseId);
-
         let progressData = await CourseProgress.findOne({
             userId: user._id,
             courseId: courseObjectId
@@ -112,7 +108,7 @@ export const updateUserCourseProgress = async (req, res) => {
         } else {
             progressData = await CourseProgress.create({
                 userId: user._id,
-                courseId: courseObjectId,
+                courseId: courseId,
                 lectureCompleted: lectureId ? [lectureId] : []
             })
             return res.status(200).json({ success: true, message: "Progress Created", progressData });
@@ -133,12 +129,9 @@ export const getCourseProgress = async (req, res) => {
         const user = await User.findOne({ clerkUserId: clerkUserId })
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-        // تأكد إن courseId ObjectId
-        const courseObjectId = new mongoose.Types.ObjectId(courseId);
-
         let progressData = await CourseProgress.findOne({
             userId: user._id,
-            courseId: courseObjectId
+            courseId: courseId
         });
         if (!progressData) {
             return res.status(400).json({ success: false, message: 'Course Progress Not Found' })
