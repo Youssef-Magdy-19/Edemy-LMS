@@ -114,13 +114,20 @@ export const stripeWebhooks = async (req, res) => {
                 userId: userData._id,
                 courseId: courseData._id
             });
-            if (!existingProgress) {
-                await CourseProgress.create({
+            try{
+                if (!existingProgress) {
+                const progress = await CourseProgress.create({
                     userId: userData._id,
                     courseId: courseData._id,
                     lectureCompleted: []
                 });
+                console.log('course progress created: ', progress)
             }
+            }catch(error){
+                console.error('Error creating Course Progress: ' , error)
+            }
+
+            
 
 
             purchaseData.status = 'completed'
