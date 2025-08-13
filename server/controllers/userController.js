@@ -121,7 +121,7 @@ export const getCourseProgress = async (req, res) => {
         const progressData = await CourseProgress.findOne({ userId, courseId })
 
         if (!progressData) {
-            res.status(400).json({ success: false, message: 'Course Progress Not Found' })
+            return res.status(400).json({ success: false, message: 'Course Progress Not Found' })
         }
 
         res.status(200).json({ success: true, progressData })
@@ -145,8 +145,8 @@ export const addUserRatingCourse = async (req, res) => {
             return res.status(404).json({success: false, message: 'Course Not Found'})
         }
 
-        const user = await User.findById(userId)
-        if(!user || user.enrolledCourses.includes(courseId)){
+        const user = await User.findOne({clerkUserId: userId})
+        if(!user || !user.enrolledCourses.includes(courseId)){
             return res.status(400).json({success: false, message: 'User has not puchased this course'})
         }
 

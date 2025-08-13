@@ -26,10 +26,10 @@ export const AppProvider = ({ children }) => {
   // Fetch All Courses
   // @ts-ignore
   const backendUrl = import.meta.env.VITE_BACKEND_URL
-  console.log(backendUrl)
   const fetchAllCourses = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/api/course/all')
+      console.log(data)
       if (data.success) {
         setAllCourses(data.courses)
       } else {
@@ -43,18 +43,14 @@ export const AppProvider = ({ children }) => {
 
   // Fetch User Data
   const fetchUserData = async () => {
-    console.log(user)
     if (user?.publicMetadata?.role === 'educator') {
       setIsEducator(true)
     }
     try {
       const token = await getToken()
-
-      const { data } = await axios.get(backendUrl + 'api/user/data', { headers: { Authorization: `Bearer ${token}` } })
-      console.log(data)
+      const { data } = await axios.get(backendUrl + '/api/user/data', { headers: { Authorization: `Bearer ${token}` } })
       if (data.success) {
         setUserData(data.user)
-        console.log(userData)
       }
     } catch (error) {
       toast.error(error.message)
@@ -68,7 +64,6 @@ export const AppProvider = ({ children }) => {
       const { data } = await axios.get(backendUrl + '/api/user/enrolled-courses',
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      // console.log(data)
 
       if (data.success) {
         setEnrolledCoursesIds(data.enrolledCourses.reverse())
@@ -86,16 +81,16 @@ export const AppProvider = ({ children }) => {
     try {
       if (enrolledCoursesIds.length > 0) {
         const { data } = await axios.post(backendUrl + '/api/course/get-courses-by-ids', { ids: enrolledCoursesIds })
-        console.log(data)
+
         if (data.success) {
           setEnrolledCourses(data.courses);
-          console.log(enrolledCourses)
         }
       }
     } catch (error) {
       toast.error(error.message)
     }
   }
+
 
 
   useEffect(() => {

@@ -21,7 +21,7 @@ const courseSchema = new mongoose.Schema({
     courseDescription : {type: String, require : true},
     courseThumbnail : {type: String, require : true},
     coursePrice : {type: Number, require : true},
-    isPublished : {type: Boolean, require : true},
+    isPublished : {type: Boolean, require : true, default: true},
     discount : {type: Number, require : true , min: 0, max: 100},
     courseContent: [chapterSchema],
     courseRatings: [

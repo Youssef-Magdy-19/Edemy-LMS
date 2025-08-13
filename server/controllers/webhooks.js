@@ -84,12 +84,12 @@ export const stripeWebhooks = async (req, res) => {
     try {
         event = Stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
-        return res.status(400).send(`Webhook Error: ${ err.message }`);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
     // Handle the event 
     switch (event.type) {
-        case 'payment_intent.succeeded' : {
+        case 'payment_intent.succeeded': {
             const paymentIntent = event.data.object
             const paymentIntentId = paymentIntent.id
 
@@ -109,13 +109,27 @@ export const stripeWebhooks = async (req, res) => {
             userData.enrolledCourses.push(courseData._id)
             await userData.save()
 
+            // أنشئ Progress فاضي للكورس
+            const existingProgress = await CourseProgress.findOne({
+                userId: userData._id,
+                courseId: courseData._id
+            });
+            if (!existingProgress) {
+                await CourseProgress.create({
+                    userId: userData._id,
+                    courseId: courseData._id,
+                    lectureCompleted: []
+                });
+            }
+
+
             purchaseData.status = 'completed'
             await purchaseData.save()
 
             break;
         }
 
-        case 'payment_intent.payment_failed' : {
+        case 'payment_intent.payment_failed': {
             const paymentIntent = event.data.object
             const paymentIntentId = paymentIntent.id
 

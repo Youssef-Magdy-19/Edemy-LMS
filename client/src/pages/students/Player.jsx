@@ -1,25 +1,123 @@
 import Loading from '../../components/students/Loading'
 import { assets, dummyCourses } from '../../assets/assets'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import humanizeDuration from 'humanize-duration'
 import YouTube from 'react-youtube'
 import { calcChapter, calcCourse, calcNoOfLecturesCourse } from '../../components/students/calc'
 import Rating from '../../components/students/Rating'
 import useWindowScrollToTop from '../../hooks/useWindowScrollToTop'
+import { AppContext } from '../../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const Player = () => {
-    const { id } = useParams()
+    // لازم يكون نفس الاسم الفي الراوتر غير كده هيطلعلك غير معرف
+    const { courseId } = useParams()
+    // console.log(courseId)
     const [courseFilter, setCourseFilter] = useState(null)
     const [openSection, setOpenSection] = useState({})
     const [Watch, setWatch] = useState(null)
+    const [progressData, setProgressData] = useState(null)
+    const [initialRating, setInitialRating] = useState(0)
 
+    const { enrolledCourses, backendUrl, getToken, userData, fetchUserEnrolledCourses } = useContext(AppContext)
+
+
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response) {
+                console.log('Interceptor error data:', error.response.data);
+                console.log('Interceptor error status:', error.response.status);
+            } else {
+                console.log('Interceptor error message:', error.message);
+            }
+            return Promise.reject(error);
+        }
+    )
+    // console.log(userData)
     const fetchCourseData = async () => {
-        const findCourse = dummyCourses.find((course) => course._id === id)
-        setCourseFilter(findCourse)
+        enrolledCourses.map((course) => {
+            if (course._id === courseId) {
+                setCourseFilter(course)
+                course.courseRatings.map((item) => {
+                    if (item.userId === userData.clerkUserId) {
+                        setInitialRating(item.rating)
+                    }
+                })
+            }
+        })
     }
 
-    useEffect(() => { fetchCourseData() }, [dummyCourses])
+    useEffect(() => {
+        if (enrolledCourses.length > 0) {
+            fetchCourseData()
+        }
+    }, [enrolledCourses])
+
+    const markLectureAsCompleted = async (lectureId) => {
+        try {
+            const token = await getToken()
+            const { data } = await axios.post(backendUrl + '/api/user/update-course-progress',
+                { courseId, lectureId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+
+            if (data.success) {
+                toast.success(data.message)
+                getCoursesProgress()
+            } else {
+                toast.error(data.message)
+                console.log(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+            console.log(error.message)
+        }
+    }
+
+    const getCoursesProgress = async () => {
+        try {
+            const token = await getToken()
+            const { data } = await axios.post(backendUrl + '/api/user/get-course-progress',
+                { courseId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+
+            if (data.success) {
+                setProgressData(data.progressData)
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const handleRate = async (rating) => {
+        try {
+            const token = await getToken()
+            const { data } = await axios.post(backendUrl + '/api/user/add-rating',
+                { courseId, rating },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+
+            if (data.success) {
+                toast.success(data.message)
+                fetchUserEnrolledCourses()
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+
+        }
+    }
+
 
     const handleSection = (index) => {
         setOpenSection((prev) => (
@@ -29,6 +127,11 @@ const Player = () => {
             }
         ))
     }
+
+    useEffect(() => {
+        getCoursesProgress()
+    }, [])
+
     useWindowScrollToTop()
     return courseFilter ? (
         <div className='bg-white' style={{ padding: '45px 10px' }}>
@@ -56,16 +159,17 @@ const Player = () => {
                                                         {chapter.chapterContent.map((lec, index) => (
                                                             <li key={index} className='flex gap-3 justify-between ' style={{ padding: '5px 10px' }}>
                                                                 <div className='flex gap-2 text-gray-800 text-xs md:text-base items-center'>
-                                                                    <img src={assets.play_icon} alt="" className='h-4 w-4' />
+                                                                    <img src={progressData && progressData.lectureCompleted.includes(lec.lectureId) ? assets.blue_tick_icon : assets.play_icon} alt="" className='h-4 w-4' />
                                                                     <p>{lec.lectureTitle}</p>
                                                                 </div>
                                                                 <div className='flex gap-3 items-center'>
                                                                     {<p className='text-blue-500 cursor-pointer' onClick={() => {
                                                                         setWatch({
-                                                                            videoId: lec.lectureUrl.split('/').pop() ,
-                                                                            lecTitle : lec.lectureTitle , 
-                                                                            numberChapter : ind+1 ,
-                                                                            numberLectcure : index+1
+                                                                            lectureId: lec.lectureId,
+                                                                            videoId: lec.lectureUrl.split('/').pop(),
+                                                                            lecTitle: lec.lectureTitle,
+                                                                            numberChapter: ind + 1,
+                                                                            numberLecture: index + 1
                                                                         }),
                                                                             scrollTo(0, 0)
                                                                     }}>Watch</p>}
@@ -79,9 +183,9 @@ const Player = () => {
                                         )
                                     })}
                                 </div>
-                                <div className='flex items-center gap-2' style={{padding:'12px 0 ' , marginTop:'25px'}}>
+                                <div className='flex items-center gap-2' style={{ padding: '12px 0 ', marginTop: '25px' }}>
                                     <h1 className='text-xl font-bold'>Rate This Course:</h1>
-                                    <Rating initialRating={0} onRate={undefined} />
+                                    <Rating initialRating={initialRating} onRate={handleRate} />
                                 </div>
                             </div>
                         </div>
@@ -94,8 +198,13 @@ const Player = () => {
                             <div>
                                 <YouTube videoId={Watch.videoId} iframeClassName='w-full aspect-video h-65' />
                                 <div className="flex justify-between items-center">
-                                    <p>{Watch.numberChapter}.{Watch.numberLectcure} {Watch.lecTitle}</p>
-                                    <button className='text-blue-600 cursor-pointer'>{false ? 'Completed' : 'Mark Complete'}</button>
+                                    <p>{Watch.numberChapter}.{Watch.numberLecture} {Watch.lecTitle}</p>
+                                    <button
+                                        onClick={() => markLectureAsCompleted(Watch.lectureId)}
+                                        className='text-blue-600 cursor-pointer'
+                                    >
+                                        {progressData && progressData.lectureCompleted.includes(Watch.lectureId) ? 'Completed' : 'Mark Complete'}
+                                    </button>
                                 </div>
                             </div>
                             : <img src={courseFilter.courseThumbnail} className='h-65' style={{ width: '100%' }} alt="Course Thumbnail" />

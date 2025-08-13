@@ -1,46 +1,10 @@
-// import { useState } from "react"
-// import { chapters , setChapters } from "./reducerChapter"
-
-// export const [newCourse, setNewCourse] = useState({
-//     courseTitle: '',
-//     CoursePrice: '0',
-//     courseThumbnail: null,
-//     courseDescripition: '',
-//     courseDiscount: '0',
-//     chapters: [],
-//     currentChapterId: '',
-//     lectureDetails: {
-//       lectureTitle: '',
-//       lectureDuration: '',
-//       lectureUrl: '',
-//       isPreviewFree: false
-//     }
-//   })
-//   export const [showPop , setShowPop] = useState(false)
-
-// export const ReducerLecture = (action , chapterId , lecIndex)=>{
-//     switch(action){
-//         case 'add' :
-//             setNewCourse({...newCourse , currentChapterId : chapterId})
-//             setShowPop(true)
-//         case 'remove' : 
-//             setChapters(
-//                 chapters.map((chapter)=> {
-//                     if(chapter.chapterId === chapterId){
-//                         chapter.chapterContent.splice(lecIndex , 1)
-//                     }
-//                     return chapter
-//                 } )
-//             )
-//     }
-// }
-
 import { createSlice } from '@reduxjs/toolkit'
 import uniqid from 'uniqid'
 
 const initialState = {
     courseTitle: '',
     CoursePrice: 0,
+    isPublished: true,
     courseThumbnail: null,
     courseDescripition: '',
     courseDiscount: 0,
@@ -95,7 +59,7 @@ const ReducerLecture = createSlice({
             if (!title) return
             const newChapter = {
                 chapterId: uniqid(),
-                ChapterTitle: title,
+                chapterTitle: title,
                 collapsed: false,
                 chapterContent: [],
                 chapterOrder:
