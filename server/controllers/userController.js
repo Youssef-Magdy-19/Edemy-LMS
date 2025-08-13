@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { Purchase } from "../models/Purchase.js";
 import Course from "../models/Course.js";
 import { CourseProgress } from "../models/CourseProgress.js";
+import mongoose from "mongoose";
 
 // Get User Data
 export const getUserData = async (req, res) => {
