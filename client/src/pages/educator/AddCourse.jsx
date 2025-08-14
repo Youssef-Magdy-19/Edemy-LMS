@@ -25,7 +25,6 @@ const AddCourse = () => {
 
   // @ts-ignore
   const newCourse = useSelector(state => state.ReducerLecture)
-  console.log(newCourse)
   const dispatch = useDispatch()
   const quillRef = useRef(null)
   const editorRef = useRef(null)
@@ -98,7 +97,7 @@ const AddCourse = () => {
     <div className='flex flex-col gap-6 h-screen bg-white overflow-scroll'>
       <form
         onSubmit={handleSubmit}
-        className='w-[280px] sm:w-[350px] md:w-[450px] flex flex-col gap-4 text-gray-500 p-4'
+        className='w-full md:w-[70%] flex flex-col gap-4 text-gray-500 p-4'
       >
 
         {/* Course Title */}
@@ -123,7 +122,7 @@ const AddCourse = () => {
         </div>
 
         {/* Course Price and Thumbnail */}
-        <div className='flex flex-wrap gap-5 items-end justify-between'>
+        <div className='flex flex-wrap gap-3 items-end justify-between'>
           <div className='flex flex-col gap-1'>
             <label>Course Price</label>
             <input autoComplete='off'

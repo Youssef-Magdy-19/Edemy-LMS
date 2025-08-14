@@ -1,6 +1,4 @@
 import Sidebar from '../../components/educator/Sidebar'
-import EduNavbar from '../../components/educator/EduNavbar'
-import React from 'react'
 import { Outlet } from 'react-router-dom'
 import useWindowScrollToTop from '../../hooks/useWindowScrollToTop'
 
@@ -9,7 +7,7 @@ const Educator = () => {
   return (
     <div className='educator flex gap-2' style={{marginTop:'60px',}}>
       <Sidebar />
-      <div>{<Outlet/>}</div>
+      <div className='w-[83%] md:w-[70%] lg:w-[80%]'>{<Outlet/>}</div>
     </div>
   )
 }

@@ -354,10 +354,7 @@ export const dummyCourses = [
             }
         ],
         "educator": "675ac1512100b91a6d9b8b24",
-        "enrolledStudents": [
-            "user_2qQlvXyr02B4Bq6hT0Gvaa5fT9V",
-            "user_2qjlgkAqIMpiR2flWIRzvWKtE0w"
-        ],
+        "enrolledStudents": [],
         "courseRatings": [
             {
                 "userId": "user_2qjlgkAqIMpiR2flWIRzvWKtE0w",
@@ -428,10 +425,7 @@ export const dummyCourses = [
             }
         ],
         "educator": "675ac1512100b91a6d9b8b24",
-        "enrolledStudents": [
-            "user_2qQlvXyr02B4Bq6hT0Gvaa5fT9V",
-            "user_2qjlgkAqIMpiR2flWIRzvWKtE0w"
-        ],
+        "enrolledStudents": [],
         "courseRatings": [],
         "createdAt": "2024-12-27T11:30:00.000Z",
         "updatedAt": "2024-12-31T04:14:49.773Z",
@@ -496,10 +490,7 @@ export const dummyCourses = [
             }
         ],
         "educator": "675ac1512100b91a6d9b8b24",
-        "enrolledStudents": [
-            "user_2qQlvXyr02B4Bq6hT0Gvaa5fT9V",
-            "user_2qjlgkAqIMpiR2flWIRzvWKtE0w"
-        ],
+        "enrolledStudents": [],
         "courseRatings": [],
         "createdAt": "2024-12-17T08:16:53.622Z",
         "updatedAt": "2024-12-31T05:31:27.290Z",
@@ -564,9 +555,7 @@ export const dummyCourses = [
             }
         ],
         "educator": "675ac1512100b91a6d9b8b24",
-        "enrolledStudents": [
-            "user_2qjlgkAqIMpiR2flWIRzvWKtE0w"
-        ],
+        "enrolledStudents": [],
         "courseRatings": [],
         "createdAt": "2024-12-17T08:16:53.622Z",
         "updatedAt": "2024-12-31T05:32:55.357Z",
@@ -631,18 +620,8 @@ export const dummyCourses = [
             }
         ],
         "educator": "675ac1512100b91a6d9b8b24",
-        "enrolledStudents": [
-            "user_2qjlgkAqIMpiR2flWIRzvWKtE0w",
-            "user_2qQlvXyr02B4Bq6hT0Gvaa5fT9V",
-            "user_2qjlgkAqIMpiR2flWIRzvWKtE0w"
-        ],
-        "courseRatings": [
-            {
-                "userId": "user_2qjlgkAqIMpiR2flWIRzvWKtE0w",
-                "rating": 5,
-                "_id": "6773acf160cb0ab974342248"
-            }
-        ],
+        "enrolledStudents": [],
+        "courseRatings": [],
         "createdAt": "2024-12-27T10:00:00.000Z",
         "updatedAt": "2024-12-31T09:57:48.992Z",
         "__v": 3,
@@ -706,9 +685,7 @@ export const dummyCourses = [
             }
         ],
         "educator": "675ac1512100b91a6d9b8b24",
-        "enrolledStudents": [
-            "user_2qjlgkAqIMpiR2flWIRzvWKtE0w"
-        ],
+        "enrolledStudents": [],
         "courseRatings": [],
         "createdAt": "2024-12-17T08:16:53.622Z",
         "updatedAt": "2025-01-02T06:53:59.753Z",
@@ -773,9 +750,7 @@ export const dummyCourses = [
             }
         ],
         "educator": "675ac1512100b91a6d9b8b24",
-        "enrolledStudents": [
-            "user_2qjlgkAqIMpiR2flWIRzvWKtE0w"
-        ],
+        "enrolledStudents": [],
         "courseRatings": [],
         "createdAt": "2024-12-17T08:16:53.622Z",
         "updatedAt": "2025-01-02T06:56:13.208Z",

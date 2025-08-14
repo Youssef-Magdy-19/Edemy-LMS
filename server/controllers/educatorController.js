@@ -61,8 +61,14 @@ export const addCourse = async (req, res) => {
 // Get Educator Courses 
 export const getEducatorCourses = async (req, res) => {
     try {
-        const educator = req.auth.userId
-        const courses = await Course.find({ educator })
+        const dbUser = await User.findOne({ clerkUserId: req.auth.userId });
+        if (!dbUser) {
+            return res.status(404).json({ success: false, message: 'Educator not found' });
+        }
+        // 2. هات كل الكورسات الخاصة بيه
+        const courses = await Course.find({ educator: dbUser._id }); // استخدم ObjectId مش الـ Clerk ID
+
+
         res.status(200).json({ success: true, courses })
     } catch (error) {
         res.status(500).json({ success: true, message: error.message })
@@ -73,8 +79,14 @@ export const getEducatorCourses = async (req, res) => {
 
 export const educatorDashhboard = async (req, res) => {
     try {
-        const educator = req.auth.userId
-        const courses = await Course.find({ educator })
+        const dbUser = await User.findOne({ clerkUserId: req.auth.userId });
+        if (!dbUser) {
+            return res.status(404).json({ success: false, message: 'Educator not found' });
+        }
+
+        // 2. هات كل الكورسات الخاصة بيه
+        const courses = await Course.find({ educator: dbUser._id }); // استخدم ObjectId مش الـ Clerk ID
+
         // Calculate Total Courses
         const totalCourses = courses.length
 
@@ -116,8 +128,15 @@ export const educatorDashhboard = async (req, res) => {
 // Get Enrolled Students Data with Purchase Data
 export const getEnrolledStudentData = async (req, res) => {
     try {
-        const educator = req.auth.userId
-        const courses = await Course.find({ educator })
+        const dbUser = await User.findOne({ clerkUserId: req.auth.userId });
+        if (!dbUser) {
+            return res.status(404).json({ success: false, message: 'Educator not found' });
+        }
+
+        // 2. هات كل الكورسات الخاصة بيه
+        const courses = await Course.find({ educator: dbUser._id }); // استخدم ObjectId مش الـ Clerk ID
+
+
         const courseIds = courses.map(course => course._id)
 
         const purchases = await Purchase.find({

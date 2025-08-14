@@ -29,7 +29,6 @@ export const AppProvider = ({ children }) => {
   const fetchAllCourses = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/api/course/all')
-      console.log(data)
       if (data.success) {
         setAllCourses(data.courses)
       } else {

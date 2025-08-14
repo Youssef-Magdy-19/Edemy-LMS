@@ -47,12 +47,11 @@ const CoursesDetails = () => {
     if (userData && courseFilter) {
       // protect from undefined fields
       const userEnrolled = Array.isArray(userData.enrolledCourses) ? userData.enrolledCourses : []
-      console.log(userEnrolled)
+
       setIsAlreadyEnrolled(userEnrolled.includes(courseFilter._id))
     }
   }, [userData, courseFilter])
 
-  console.log(isAlreadyEnrolled)
 
   const enrollCourse = async () => {
     try {
@@ -63,7 +62,7 @@ const CoursesDetails = () => {
         return toast.warn('Already Enrolled')
       }
       const token = await getToken()
-      console.log(token)
+
       const { data } = await axios.post(backendUrl + '/api/user/purchase',
         { courseId: courseFilter._id }, { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -84,34 +83,32 @@ const CoursesDetails = () => {
     setOpenSection((prev) => ({ ...prev, [index]: !prev[index] }))
   }
 
-  // console.log(courseFilter.courseContent)
 
   useWindowScrollToTop()
 
   // show loading while course not loaded OR clerk not loaded (optional)
   if (!courseFilter) return <Loading />
-  // if(!userData) return <div className='h-full w-full flex justify-center items-center'>User not found</div>
 
   return courseFilter ? (
     <div className='-z-1 bg-gradient-to-b from-cyan-100/70' style={{ padding: '45px 10px' }}>
-      <div className='container flex flex-col-reverse md:flex-row gap-10 md:justify-between md:items-start'>
+      <div className='container flex flex-col-reverse lg:flex-row gap-10 lg:justify-between lg:items-start'>
         {/* left div */}
-        <div className='course-details max-w-lg x-10 text-gray-500' style={{ width: '50%', margin: '0' }}>
+        <div className='course-details max-w-lg x-10 text-gray-500 w-full lg:w-[50%] m-0'>
           <h2 className='font-semibold text-gray-800 text-xl md:text-3xl'>{courseFilter.courseTitle}</h2>
-          <p className='text-small md:text-base'
+          <p className='text-small md:text-base text-gray-500'
             dangerouslySetInnerHTML={{ __html: courseFilter.courseDescription.slice(0, 200) }}
             style={{ paddingTop: '10px' }}
           ></p>
           <div className="flex items-center gap-2">
-            <p>{courseFilter.courseRatings.length > 0 ? courseFilter.courseRatings[0].rating : 0}</p>
-            <div className='flex'>
+            <p className='text-gray-500'>{courseFilter.courseRatings.length > 0 ? courseFilter.courseRatings[0].rating : 0}</p>
+            <div className='flex text-gray-500'>
               {[...Array(courseFilter.courseRatings.length > 0 ? courseFilter.courseRatings[0].rating : 0)].map((_, i) => <img key={i} src={assets.star} className='h-3.5 w-3.5' />)}
               {[...Array(courseFilter.courseRatings.length > 0 ? 5 - courseFilter.courseRatings[0].rating : 5)].map((_, i) => <img key={i} src={assets.star_blank} className='h-3.5 w-3.5' />)}
             </div>
             <p className='text-blue-500'>({courseFilter.courseRatings.length} {courseFilter.courseRatings.length > 1 ? 'ratings' : 'rating'})</p>
-            <p>{courseFilter.enrolledStudents.length} {courseFilter.enrolledStudents.length > 1 ? 'students' : 'student'}</p>
+            <p className='text-gray-500'>{courseFilter.enrolledStudents.length} {courseFilter.enrolledStudents.length > 1 ? 'students' : 'student'}</p>
           </div>
-          <p>Course by <span style={{ marginLeft: '5px' }} className='text-blue-500 underline'>{courseFilter.educator.name}</span></p>
+          <p className='text-gray-500'>Course by <span style={{ marginLeft: '5px' }} className='text-blue-500 underline'>{courseFilter.educator.name}</span></p>
 
           <div className='text-gray-800' style={{ margin: '25px 0' }}>
             <h2 className='font-semibold text-xl' style={{ marginBottom: '15px' }}>Course Structure</h2>

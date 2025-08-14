@@ -1,10 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
 import { assets } from '../../assets/assets'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { AppContext } from '../../context/AppContext'
 
 const Sidebar = () => {
   const location = useLocation()
-  const [isEducator , setIsEducator] = useState(true)
+  const { isEducator } = useContext(AppContext)
   const menuItems = [
     { name: 'Dashboard', path: '/educator', icon: assets.home_icon },
     { name: 'Add Course', path: '/educator/add-course', icon: assets.add_icon },

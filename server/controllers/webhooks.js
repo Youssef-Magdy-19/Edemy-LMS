@@ -6,10 +6,6 @@ import Course from "../models/Course.js";
 import { CourseProgress } from "../models/CourseProgress.js";
 
 export const clerkWebhooks = async (req, res) => {
-    console.log('Received webhook request');
-    console.log('Body:', req.body);
-    console.log('Headers:', req.headers);
-
     try {
         const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
         await whook.verify(req.body, {  // خليها raw body لو تستخدم bodyParser.raw
@@ -17,12 +13,9 @@ export const clerkWebhooks = async (req, res) => {
             "svix-timestamp": req.headers['svix-timestamp'],
             "svix-signature": req.headers['svix-signature'],
         });
-        console.log('Webhook verified');
         const bodyJson = JSON.parse(req.body.toString())
 
         const { data, type } = bodyJson
-        console.log('Event type:', type);
-        console.log('Event data:', data);
 
         const userData = {
             clerkUserId: data.id,
@@ -42,16 +35,12 @@ export const clerkWebhooks = async (req, res) => {
             userData.email = emailToUse
         }
 
-        console.log(userData)
-
         switch (type) {
             case 'user.created':
-                console.log('Creating user...');
                 await User.create(userData);
                 break;
 
             case 'user.updated':
-                console.log('Updating user...');
                 await User.findOneAndUpdate(
                     { clerkUserId: data.id },
                     userData,
@@ -60,7 +49,6 @@ export const clerkWebhooks = async (req, res) => {
                 break;
 
             case 'user.deleted':
-                console.log('Deleting user...');
                 await User.findOneAndDelete({ clerkUserId: data.id });
                 break;
 
@@ -71,7 +59,6 @@ export const clerkWebhooks = async (req, res) => {
         return res.status(200).json({});
 
     } catch (error) {
-        console.error('Webhook error:', error);
         return res.status(400).json({ error: error.message });
     }
 };
@@ -122,7 +109,6 @@ export const stripeWebhooks = async (req, res) => {
                     courseId: courseData._id,
                     lectureCompleted: []
                 });
-                console.log('course progress created: ', progress)
             }
             }catch(error){
                 console.error('Error creating Course Progress: ' , error)

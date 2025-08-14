@@ -36,7 +36,7 @@ const Player = () => {
             return Promise.reject(error);
         }
     )
-    // console.log(userData)
+    
     const fetchCourseData = async () => {
         enrolledCourses.map((course) => {
             if (course._id === courseId) {
@@ -69,12 +69,10 @@ const Player = () => {
                 getCoursesProgress()
             } else {
                 toast.error(data.message)
-                console.log(data.message)
             }
 
         } catch (error) {
             toast.error(error.message)
-            console.log(error.message)
         }
     }
 
@@ -136,11 +134,11 @@ const Player = () => {
     return courseFilter ? (
         <div className='bg-white' style={{ padding: '45px 10px' }}>
             <div className='container'>
-                <div className='flex flex-col-reverse md:flex-row gap-17 md:justify-between md:items-start' style={{ marginTop: '20px' }}>
+                <div className='flex flex-col-reverse lg:flex-row gap-17 lg:justify-between lg:items-start mt-[20px]'>
                     {/* left div */}
-                    <div style={{ marginTop: '10px' }}>
+                    <div className='mt-[10px]'>
                         <h2 className='font-semibold text-xl' style={{ marginBottom: '15px', marginTop: '-50px' }}>Course Structure</h2>
-                        <div className='course-details max-w-lg x-10 text-gray-500 w-full' style={{ margin: '0' }}>
+                        <div className='course-details max-w-lg x-10 text-gray-500 w-full m-0'>
                             <div className='text-gray-800'>
 
                                 <div className='flex flex-col gap-4'>

@@ -128,8 +128,7 @@ export const getCourseProgress = async (req, res) => {
         const { courseId } = req.body
         const user = await User.findOne({ clerkUserId: clerkUserId })
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
-        console.log(user._id)
-        console.log(courseId)
+        
         let progressData = await CourseProgress.findOne({
             userId: user._id,
             courseId: courseId

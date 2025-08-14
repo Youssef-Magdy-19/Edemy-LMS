@@ -7,7 +7,6 @@ const SearchBar = ({ data, margin, functionSearch }) => {
   const [input, setInput] = useState(data ? data : '')
   const onSearchHandler = (e) => {
     e.preventDefault()
-    console.log(input)
     navigate('/course-list/' + input)
     let filterSearch = dummyCourses.filter((course) => course.courseTitle.toLowerCase().includes(input.toLowerCase()))
     localStorage.setItem('filterCourse', JSON.stringify(filterSearch))

@@ -9,7 +9,9 @@
     margin: 0;
     padding: 0
   }
-
+  body{
+    width: 100% !important;
+  }
   html {
     scroll-behavior: smooth;
   }
@@ -17,6 +19,7 @@
 
 ::-webkit-scrollbar {
   display: none;
+  /* position: inherit; */
 }
 
 .rich-text {
@@ -86,6 +89,12 @@ button {
     width: 92% !important;
     margin: auto;
     color: rgba(180, 180, 180, 0.459);
+  }
+
+  .edufooter-img{
+    position: absolute;
+    top: -170%;
+    left: 0;
   }
 }
 

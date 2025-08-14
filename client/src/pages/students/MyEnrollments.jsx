@@ -32,7 +32,6 @@ const MyEnrollments = () => {
       const token = await getToken();
       const tempProgressArray = await Promise.all(
         enrolledCourses.map(async (course) => {
-          console.log(enrolledCourses)
           const { data } = await axios.post(
             `${backendUrl}/api/user/get-course-progress`,
             { courseId: course._id },
@@ -50,7 +49,6 @@ const MyEnrollments = () => {
       );
 
       setProgressArray(tempProgressArray);
-      console.log(tempProgressArray)
     } catch (error) {
       toast.error(error.message);
     }
@@ -61,15 +59,12 @@ const MyEnrollments = () => {
       fetchUserEnrolledCourses()
     }
   }, [userData])
-  console.log(enrolledCourses.length, enrolledCourses)
   useEffect(() => {
     if (enrolledCourses.length > 0) {
-      console.log('okkkkkkkk');
       getProgressData();
     }
   }, [enrolledCourses]);
 
-  console.log(ProgressArray)
 
   useWindowScrollToTop()
   return (
@@ -79,7 +74,7 @@ const MyEnrollments = () => {
         <thead className='text-gray-900 border-b border-gray-500/20 text-sm text-left ' style={{ padding: "10px" }}>
           <tr>
             <th style={{ padding: '10px' }} className='col-course font-semibold truncate'>Course</th>
-            <th style={{ padding: '10px' }} className=' font-semibold truncate max-sm:hidden'>Duration</th>
+            <th style={{ padding: '10px' }} className=' font-semibold truncate max-lg:hidden'>Duration</th>
             <th style={{ padding: '10px' }} className=' font-semibold truncate max-sm:hidden'>Completed</th>
             <th style={{ padding: '10px' }} className=' font-semibold truncate'>Status</th>
           </tr>
@@ -89,22 +84,23 @@ const MyEnrollments = () => {
             enrolledCourses.map((course, index) => {
               return (
                 <tr key={index} className='border-b border-gray-500/20'>
-                  <td className='flex gap-1 sm:gap-2 items-center space-x-3'>
+                  <td className='flex gap-1 items-center sm:gap-2 m-0 p-0'>
                     <img src={course.courseThumbnail} className='w-24 md:w-33' style={{ padding: '5px 10px' }} alt="" />
-                    <div>
+                    <div className='md:w-[250px]'>
                       <p className='max-sm:text-sm mb-1'>{course.courseTitle}</p>
                       {/* <Line strokeWidth={2} percent={(ProgressArray[index].lectureCompleted.length / ProgressArray[index].totalLectures) * 100} className='rounded-full bg-gray-300 w-full progress' /> */}
                       <Line
+                      className='w-[85%] md:w-full'
                         strokeWidth={2}
                         percent={((ProgressArray[index]?.lectureCompleted?.length || 0) / (ProgressArray[index]?.totalLectures || 1)) * 100}
                       />
                     </div>
                   </td>
 
-                  <td className='max-sm:hidden'>{calcCourse(course)}</td>
+                  <td className='max-lg:hidden'>{calcCourse(course)}</td>
 
                   {/* <td className='max-sm:hidden'>{ProgressArray[index].lectureCompleted.length} / {ProgressArray[index].totalLectures} Lectures</td> */}
-                  <td className='max-sm:hidden'>
+                  <td className='max-sm:hidden text-left'>
                     {(ProgressArray[index]?.lectureCompleted?.length || 0)} / {(ProgressArray[index]?.totalLectures || 0)} Lectures
                   </td>
 

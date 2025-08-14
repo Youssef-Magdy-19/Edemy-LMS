@@ -4,9 +4,8 @@ import React from 'react'
 
 const CourseCard = ({ course }) => {
   const navigate = useNavigate()
-  console.log(course)
   return (
-    <div className='border-1 border-gray-500/30 text-start cursor-pointer rounded-lg'
+    <div className='border-1 border-gray-500/30 text-start cursor-pointer rounded-lg w-full'
       style={{ paddingBottom: '5px' }}
       onClick={() => navigate('/course/' + course._id)}
     >
