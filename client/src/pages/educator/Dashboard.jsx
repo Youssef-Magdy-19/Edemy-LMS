@@ -55,7 +55,7 @@ const Dashboard = () => {
             <div className="flex items-center gap-3 shadow-card border-1 border-blue-500 rounded-md w-70 md:w-62 m-auto" style={{ padding: '10px' }}>
               <img src={assets.earning_icon} alt="" className='w-12' />
               <div className="flex flex-col">
-                <p className='text-2xl font-medium text-gray-600'>$ {DashboardData.totalsEarnings}</p>
+                <p className='text-2xl font-medium text-gray-600'>$ {DashboardData.totalsEarnings.toFixed(2)}</p>
                 <p className='text-base text-gray-500'>totalEarnings</p>
               </div>
             </div>

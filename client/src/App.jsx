@@ -9,8 +9,8 @@ import CoursesDetails from './pages/students/CoursesDetails'
 import CoursesList from './pages/students/CoursesList'
 import Home from './pages/students/Home'
 import MyEnrollments from './pages/students/MyEnrollments'
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Footer from './components/students/Footer'
 import EduNavbar from './components/educator/EduNavbar'
 import Player from './pages/students/Player'
@@ -20,13 +20,14 @@ import 'quill/dist/quill.snow.css'
 import { ToastContainer } from 'react-toastify'
 
 const App = () => {
+  const location = useLocation()
   // مهمه جدا عشان اقدر احط كل هيدر في مكانه الصح 
   const CheckEducator = location.pathname.includes('/educator')
+
   return (
-    <div style={{marginTop: CheckEducator ? '60px' : '60px'}}>
+    <div style={{marginTop:'60px'}}>
       <ToastContainer />
       {CheckEducator ? <EduNavbar /> : <Navbar />}
-      {/* {CheckEducator ? <Sidebar /> : null} */}
       <Routes>
         <Route path='/' element={<Home/>} />
         <Route path='/course/:id' element={<CoursesDetails/>} />
